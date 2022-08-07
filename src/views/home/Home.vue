@@ -30,6 +30,7 @@ import Scroll from "components/common/scroll/Scroll";
 import BackTop from "components/content/backtop/BackTop";
 
 import {getHomeGoodsData, getHomeMultidata} from "network/homejs";
+import {debounce} from "common/utils";
 
 
 export default {
@@ -65,6 +66,17 @@ export default {
     this.loadHomeGoodsData('pop');
     this.loadHomeGoodsData('new');
     this.loadHomeGoodsData('sell');
+  },
+  mounted() {
+    // 监听图片加载完成
+    ///const refresh = this.debounce(this.$refs.scroll.refresh,500)
+    this.$bus.$on("itemImageLoad",()=>{
+      if (this.$refs.scroll){
+        // 图片加载完了
+        console.log("图片加载完了")
+        debounce(this.$refs.scroll.refresh(),50)
+      }
+    })
   },
   methods: {
     tabClick(index) {

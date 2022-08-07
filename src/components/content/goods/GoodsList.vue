@@ -1,7 +1,7 @@
 <template>
   <div class="goods-list">
     <goods-list-item v-for="(item,index) in goods"
-                     :key="item.iid"
+                     :key="item.link"
                      :goodsItem="item"/>
   </div>
 </template>

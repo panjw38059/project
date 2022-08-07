@@ -1,10 +1,10 @@
 <template>
   <div class="goods-list-item">
-    <img :src="goodsItem.show.img">
-    <div class = "goods-info">
-      <p>{{goodsItem.title}}</p>
-      <span class="price">{{goodsItem.price}}</span>
-      <span class="collect">{{goodsItem.cfav}}</span>
+    <img :src="goodsItem.show.img" @load=imgLoad>
+    <div class="goods-info">
+      <p>{{ goodsItem.title }}</p>
+      <span class="price">{{ goodsItem.price }}</span>
+      <span class="collect">{{ goodsItem.cfav }}</span>
     </div>
   </div>
 </template>
@@ -12,12 +12,17 @@
 <script>
 export default {
   name: "GoodsListItem",
-  props:{
+  props: {
     goodsItem: {
-      type:Object,
-      default(){
+      type: Object,
+      default() {
         return {}
       }
+    }
+  },
+  methods:{
+    imgLoad(){
+      this.$bus.$emit("itemImageLoad")
     }
   }
 }
