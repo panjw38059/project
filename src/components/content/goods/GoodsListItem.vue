@@ -24,6 +24,7 @@ export default {
     imgLoad(){
       this.$bus.$emit("itemImageLoad")
     }
+
   }
 }
 </script>

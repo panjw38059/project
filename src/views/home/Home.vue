@@ -3,6 +3,13 @@
     <nav-bar class="home-nav">
       <div slot="center">购物街</div>
     </nav-bar>
+    <tab-control
+      :titles='titles'
+      class="tabcontrol"
+      @tabClick=tabClick
+      ref="tabcontrol1"
+      v-show="isTabFixed">
+    </tab-control>
     <scroll class="content" ref="scroll"
             :probe-type="3"
             @scroll="contentScroll"
@@ -11,7 +18,11 @@
       <home-swiper :banners='banners'></home-swiper>
       <home-reconmend :reconmend='reconmend'></home-reconmend>
       <home-feature></home-feature>
-      <tab-control :titles='titles' class="tabcontrol" @tabClick=tabClick></tab-control>
+      <tab-control
+        :titles='titles'
+        @tabClick=tabClick
+        ref="tabcontrol2">
+      </tab-control>
       <goods-list :goods="showGoods"></goods-list>
     </scroll>
     <back-top @click.native="backClick" v-show="isShowBackTop"></back-top>
@@ -58,7 +69,10 @@ export default {
         "new": {page: 0, list: []},
         "sell": {page: 0, list: []}
       },
-      isShowBackTop: false
+      isShowBackTop: false,
+      tabcontrolOffset: 0,
+      isTabFixed: false,
+      saveY: 0
     }
   },
   created() {
@@ -70,17 +84,19 @@ export default {
   mounted() {
     // 监听图片加载完成
     ///const refresh = this.debounce(this.$refs.scroll.refresh,500)
-    this.$bus.$on("itemImageLoad",()=>{
-      if (this.$refs.scroll){
+    this.$bus.$on("itemImageLoad", () => {
+      if (this.$refs.scroll) {
         // 图片加载完了
-        console.log("图片加载完了")
-        debounce(this.$refs.scroll.refresh(),50)
+        //console.log("图片加载完了")
+        debounce(this.$refs.scroll.refresh(), 50)
       }
     })
   },
   methods: {
     tabClick(index) {
       this.currentType = this.types[index];
+      this.$refs.tabcontrol1.currentSelectIndex = index;
+      this.$refs.tabcontrol2.currentSelectIndex = index;
     },
     contentScroll(position) {
       //console.log(position);
@@ -88,15 +104,15 @@ export default {
       this.isShowBackTop = (-position.y) > 1000
 
       // 2.决定tabControl是否吸顶(position: fixed)
-      this.isTabFixed = (-position.y) > this.tabOffsetTop
+      this.isTabFixed = (-position.y) > this.tabcontrolOffset
     },
     loadMore() {
       this.loadHomeGoodsData(this.currentType)
-      console.log("底部")
+      //console.log("底部")
     },
-    swiperImageLoad() {
-      this.tabOffsetTop = this.$refs.tabControl2.$el.offsetTop;
-    },
+    // swiperImageLoad() {
+    //   this.tabOffsetTop = this.$refs.tabControl2.$el.offsetTop;
+    // },
     backClick() {
       this.$refs.scroll.scrollToTop();
     },
@@ -110,7 +126,7 @@ export default {
     loadHomeGoodsData(type) {
       const currentPage = this.goods[type].page + 1
       getHomeGoodsData({"type": type, "page": currentPage}).then(res => {
-        console.log(res);
+        //console.log(res);
         this.goods[type].list.push(...res.data.list)
         this.goods[type].page += 1
         this.$refs.scroll.finishPullUp();
@@ -121,6 +137,17 @@ export default {
     showGoods() {
       return this.goods[this.currentType].list
     }
+  },
+  updated() {
+    this.tabcontrolOffset = this.$refs.tabcontrol2.$el.offsetTop
+    // console.log(this.tabcontrolOffset)
+  },
+  activated() {
+    this.$refs.scroll.scrollToXY(0,this.saveY,0)
+    this.$refs.scroll.refresh()
+  },
+  deactivated() {
+    this.saveY = this.$refs.scroll.getScrollY();
   }
 }
 </script>
@@ -136,11 +163,11 @@ export default {
   background-color: var(--color-tint);
   color: #f6f6f6;
 
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 0;
-  z-index: 9;
+  /*position: fixed;*/
+  /*left: 0;*/
+  /*right: 0;*/
+  /*top: 0;*/
+  /*z-index: 9;*/
 
 }
 
@@ -161,5 +188,12 @@ export default {
   bottom: 49px;
   left: 0;
   right: 0;
+}
+
+.fix {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 40px;
 }
 </style>

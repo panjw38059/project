@@ -23,7 +23,7 @@ export default {
     }
   },
   created() {
-    console.log(this.reconmend);
+    //console.log(this.reconmend);
   }
 }
 </script>

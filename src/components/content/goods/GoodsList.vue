@@ -2,7 +2,8 @@
   <div class="goods-list">
     <goods-list-item v-for="(item,index) in goods"
                      :key="item.link"
-                     :goodsItem="item"/>
+                     :goodsItem="item"
+                     @click.native= toDetail(item.iid) />
   </div>
 </template>
 
@@ -19,7 +20,19 @@ export default {
         return []
       }
     }
+  },
+  methods:{
+    toDetail(iid){
+      console.log(iid)
+      this.$router.push({
+        path:"/detail",
+        query:{
+          iid
+        }
+      })
+    }
   }
+
 }
 </script>
 
