@@ -72,7 +72,8 @@ export default {
       isShowBackTop: false,
       tabcontrolOffset: 0,
       isTabFixed: false,
-      saveY: 0
+      saveY: 0,
+      itemImageListener:null
     }
   },
   created() {
@@ -84,13 +85,14 @@ export default {
   mounted() {
     // 监听图片加载完成
     ///const refresh = this.debounce(this.$refs.scroll.refresh,500)
-    this.$bus.$on("itemImageLoad", () => {
+    this.itemImageListener = () => {
       if (this.$refs.scroll) {
         // 图片加载完了
         //console.log("图片加载完了")
         debounce(this.$refs.scroll.refresh(), 50)
       }
-    })
+    }
+    this.$bus.$on("itemImageLoad",this.itemImageListener )
   },
   methods: {
     tabClick(index) {
@@ -148,6 +150,7 @@ export default {
   },
   deactivated() {
     this.saveY = this.$refs.scroll.getScrollY();
+    this.$bus.$off("itemImageLoad",this.itemImageListener)
   }
 }
 </script>

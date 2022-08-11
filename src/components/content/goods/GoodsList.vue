@@ -1,9 +1,12 @@
 <template>
-  <div class="goods-list">
-    <goods-list-item v-for="(item,index) in goods"
-                     :key="item.link"
-                     :goodsItem="item"
-                     @click.native= toDetail(item.iid) />
+  <div>
+    <div class="recommend" v-show="isRecommend">推荐商品</div>
+    <div class="goods-list">
+      <goods-list-item v-for="(item,index) in goods"
+                       :key="item.link"
+                       :goodsItem="item"
+                       @click.native= toDetail(item.iid) />
+    </div>
   </div>
 </template>
 
@@ -18,6 +21,12 @@ export default {
       type: Array,
       default() {
         return []
+      }
+    },
+    isRecommend: {
+      type: Boolean,
+      default() {
+        return false
       }
     }
   },
@@ -42,5 +51,11 @@ export default {
   flex-wrap: wrap;
   justify-content: space-around;
   padding: 2px;
+}
+.recommend{
+  font-size: 15px;
+  margin-top: 10px;
+  padding-left: 10px;
+  padding-bottom: 10px;
 }
 </style>
